@@ -1,0 +1,33 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: host-check
+  namespace: sample
+spec:
+  entryPoints:
+    - http
+  routes:
+    - kind: Rule
+      match: Host(`example.com`) && PathPrefix(`/api/v1.0/users`)
+      priority: 1000
+      services:
+        - name: airflow-web
+          port: 8080
+    - kind: Rule
+      match: Host(`example.com`) && (PathPrefix(`/api/v1.0/users`) || PathPrefix(`/api/v1.1/users`))
+      priority: 1000
+      services:
+        - name: airflow-web
+          port: 8080
+    - kind: Rule
+      match: Host(`example.com`) && PathRegexp(`^/api/(?P<version>[^/]+)/users`)
+      priority: 1000
+      services:
+        - name: airflow-web
+          port: 8080
+    - kind: Rule
+      match: Host(`example.com`) && PathRegexp(`^/api/(?P<license_id>[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12})/license`)
+      priority: 1000
+      services:
+        - name: airflow-web
+          port: 8080

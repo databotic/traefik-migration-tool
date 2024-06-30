@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: app-ratelimit
+  namespace: app
+spec:
+  reqLimitter:
+    burst: 5
+    rate: 20/m
+    redisAddr: redis.traefik:6379
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+

@@ -1,0 +1,39 @@
+project_name: traefik-migration-tool
+
+builds:
+  - binary: traefik-migration-tool
+    flags:
+      - -trimpath
+    env:
+      - CGO_ENABLED=0
+    targets:
+      - darwin_amd64
+      - darwin_arm64
+      - linux_amd64
+      - linux_arm64
+      - windows_amd64
+      - windows_arm64
+    ldflags:
+      - -s -w -X github.com/databotic/traefik-migration-tool/internal/utils.Version={{.Version}} 
+changelog:
+  sort: asc
+  use: github-native
+  filters:
+    exclude:
+      - '^ci:'
+      - '^Merge'
+      - '^chore:'
+      - '^chore(deps):'
+      - '^test:'
+      - '^tests:'
+
+archives:
+  - id: traefik-migration-tool
+    name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+
+checksum:
+  name_template: "{{ .ProjectName }}_v{{ .Version }}_checksums.txt"

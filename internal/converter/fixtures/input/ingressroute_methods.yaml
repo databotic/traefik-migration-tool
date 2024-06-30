@@ -1,0 +1,22 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  creationTimestamp: null
+  name: host-check
+  namespace: sample
+spec:
+  entryPoints:
+    - http
+  routes:
+    - kind: Rule
+      match: Host(`example.com`) && PathPrefix(`/`) && (Method(`GET`) || Method(`POST`))
+      priority: 1000
+      services:
+        - name: airflow-web
+          port: 8080
+    - kind: Rule
+      match: Host(`example.com`, `example2.com`) && PathPrefix(`/`) && Method(`GET`, `POST`)
+      priority: 1000
+      services:
+        - name: airflow-web
+          port: 8080
